@@ -3,14 +3,98 @@
   "theme": "mint",
   "name": "MeowKit-S3 Documentation",
 
+  "colors": {
+    "primary": "#BBE700",
+    "light": "#D7FF4A",
+    "dark": "#8CB800"
+  },
+
+  "favicon": "/favicon.svg",
+
   "navigation": {
-    "groups": [
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "icon": "github",
+          "href": "https://github.com/minglolucky/meowkit-s3-docs"
+        },
+        {
+          "anchor": "Community",
+          "icon": "messages",
+          "href": "https://discord.gg/"
+        }
+      ]
+    },
+
+    "products": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index"
+        "product": "MeowKit-S3",
+
+        "tabs": [
+          {
+            "tab": "Guides",
+
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "index",
+                  "introduction"
+                ]
+              },
+
+              {
+                "group": "Hardware",
+                "pages": [
+                  "tech-specs"
+                ]
+              }
+            ]
+          }
         ]
       }
     ]
+  },
+
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+
+  "navbar": {
+    "links": [
+      {
+        "label": "MeowKit.cc",
+        "href": "https://meowkit.cc"
+      }
+    ],
+
+    "primary": {
+      "type": "button",
+      "label": "GitHub",
+      "href": "https://github.com/minglolucky/MeowKit"
+    }
+  },
+
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+
+  "footer": {
+    "socials": {
+      "x": "https://x.com/meowkit_cc",
+      "github": "https://github.com/minglolucky",
+      "linkedin": "https://linkedin.com"
+    }
   }
 }
