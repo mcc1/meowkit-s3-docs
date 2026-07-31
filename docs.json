@@ -10,15 +10,6 @@
   },
 
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "icon": "github",
-          "href": "https://github.com/mingolucky/meowkit-s3-firmware"
-        }
-      ]
-    },
     "groups": [
       {
         "group": "Getting Started",
@@ -29,7 +20,8 @@
       {
         "group": "Hardware",
         "pages": [
-          "tech-specs"
+          "tech-specs",
+          "untitled-page"
         ]
       }
     ]
@@ -44,8 +36,9 @@
     ],
 
     "primary": {
-      "type": "github",
-      "href": "https://github.com/mingolucky/meowkit-s3-firmware"
+      "type": "button",
+      "href": "https://meowkit.cc",
+      "label": "Buy MeowKit-S3"
     }
   },
 
@@ -55,10 +48,7 @@
       "view",
       "chatgpt",
       "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
+      "mcp"
     ]
   },
 
