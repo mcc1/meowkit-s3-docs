@@ -1,9 +1,5 @@
 {
   "name": "MeowKit-S3",
-  "logo": {
-    "light": "/images/logo.png",
-    "dark": "/images/logo.png"
-  },
   "navigation": {
     "groups": [
       {
