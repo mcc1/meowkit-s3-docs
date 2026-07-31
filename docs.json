@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "palm",
-  "name": "MeowKit-S3 Documentation",
+  "name": "MeowKit-S3",
 
   "colors": {
     "primary": "#BBE700",
@@ -15,27 +15,21 @@
         {
           "anchor": "GitHub",
           "icon": "github",
-          "href": "https://github.com/mingolucky"
+          "href": "https://github.com/mingolucky/meowkit-s3-firmware"
         }
       ]
     },
-
-    "products": [
+    "groups": [
       {
-        "product": "MeowKit-S3",
-        "groups": [
-          {
-            "group": "Hardware",
-            "pages": [
-              "tech-specs"
-            ]
-          },
-          {
-            "group": "Getting Started",
-            "pages": [
-              "introduction"
-            ]
-          }
+        "group": "Getting Started",
+        "pages": [
+          "introduction"
+        ]
+      },
+      {
+        "group": "Hardware",
+        "pages": [
+          "tech-specs"
         ]
       }
     ]
@@ -44,15 +38,14 @@
   "navbar": {
     "links": [
       {
-        "label": "MeowKit.cc",
+        "label": "Store",
         "href": "https://meowkit.cc"
       }
     ],
 
     "primary": {
-      "type": "button",
-      "label": "GitHub",
-      "href": "https://github.com/minglolucky/MeowKit"
+      "type": "github",
+      "href": "https://github.com/mingolucky/meowkit-s3-firmware"
     }
   },
 
@@ -72,7 +65,7 @@
   "footer": {
     "socials": {
       "x": "https://x.com/meowkit_cc",
-      "github": "https://github.com/minglolucky"
+      "github": "https://github.com/mingolucky"
     }
   },
   "background": {
