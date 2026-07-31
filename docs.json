@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "palm",
   "name": "MeowKit-S3 Documentation",
 
   "colors": {
@@ -39,7 +39,6 @@
               {
                 "group": "Getting Started",
                 "pages": [
-                  "index",
                   "introduction"
                 ]
               },
@@ -58,8 +57,8 @@
   },
 
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/vi-logo.png",
+    "dark": "/images/logo-16.png"
   },
 
   "navbar": {
@@ -93,8 +92,7 @@
   "footer": {
     "socials": {
       "x": "https://x.com/meowkit_cc",
-      "github": "https://github.com/minglolucky",
-      "linkedin": "https://linkedin.com"
+      "github": "https://github.com/minglolucky"
     }
   }
 }
