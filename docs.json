@@ -9,20 +9,13 @@
     "dark": "#8CB800"
   },
 
-  "favicon": "/favicon.svg",
-
   "navigation": {
     "global": {
       "anchors": [
         {
           "anchor": "GitHub",
           "icon": "github",
-          "href": "https://github.com/minglolucky/meowkit-s3-docs"
-        },
-        {
-          "anchor": "Community",
-          "icon": "messages",
-          "href": "https://discord.gg/"
+          "href": "https://github.com/mingolucky"
         }
       ]
     },
@@ -46,11 +39,6 @@
         ]
       }
     ]
-  },
-
-  "logo": {
-    "light": "/images/vi-logo.png",
-    "dark": "/images/logo-16.png"
   },
 
   "navbar": {
@@ -86,5 +74,8 @@
       "x": "https://x.com/meowkit_cc",
       "github": "https://github.com/minglolucky"
     }
+  },
+  "background": {
+    "decoration": "windows"
   }
 }
