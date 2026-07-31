@@ -1,13 +1,18 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
   "name": "MeowKit-S3",
-  "navigation": {
-    "groups": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index"
-        ]
-      }
-    ]
-  }
+  "colors": {
+    "primary": "#BBE700",
+    "light": "#BBE700",
+    "dark": "#BBE700"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "index"
+      ]
+    }
+  ]
 }
