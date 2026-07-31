@@ -30,25 +30,17 @@
     "products": [
       {
         "product": "MeowKit-S3",
-
-        "tabs": [
+        "groups": [
           {
-            "tab": "Guides",
-
-            "groups": [
-              {
-                "group": "Getting Started",
-                "pages": [
-                  "introduction"
-                ]
-              },
-
-              {
-                "group": "Hardware",
-                "pages": [
-                  "tech-specs"
-                ]
-              }
+            "group": "Hardware",
+            "pages": [
+              "tech-specs"
+            ]
+          },
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction"
             ]
           }
         ]
