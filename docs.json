@@ -38,7 +38,7 @@
   "navbar": {
     "links": [
       {
-        "label": "Store",
+        "label": "Home",
         "href": "https://meowkit.cc"
       }
     ],
@@ -65,7 +65,8 @@
   "footer": {
     "socials": {
       "x": "https://x.com/meowkit_cc",
-      "github": "https://github.com/mingolucky"
+      "github": "https://github.com/mingolucky",
+      "discord": "https://discord.com/invite/jSKvJXFmMM"
     }
   }
 }
