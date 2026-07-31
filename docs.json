@@ -1,8 +1,17 @@
 {
   "name": "MeowKit-S3",
+  "logo": {
+    "light": "/images/logo.png",
+    "dark": "/images/logo.png"
+  },
   "navigation": {
-    "pages": [
-      "index"
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index"
+        ]
+      }
     ]
   }
 }
