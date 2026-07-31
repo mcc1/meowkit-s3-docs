@@ -1,34 +1,11 @@
 {
   "name": "MeowKit-S3",
-  "logo": {
-    "light": "/images/logo.png",
-    "dark": "/images/logo.png"
-  },
   "navigation": {
     "groups": [
       {
         "group": "Getting Started",
         "pages": [
-          "index",
-          "getting-started/introduction"
-        ]
-      },
-      {
-        "group": "Hardware",
-        "pages": [
-          "hardware/overview"
-        ]
-      },
-      {
-        "group": "Developer",
-        "pages": [
-          "developer/setup",
-        ]
-      },
-      {
-        "group": "System",
-        "pages": [
-          "System/main interface"
+          "index"
         ]
       }
     ]
