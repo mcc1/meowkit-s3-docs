@@ -1,13 +1,8 @@
 {
   "name": "MeowKit-S3",
   "navigation": {
-    "groups": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index"
-        ]
-      }
+    "pages": [
+      "index"
     ]
   }
 }
