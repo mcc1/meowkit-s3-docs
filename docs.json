@@ -12,16 +12,9 @@
   "navigation": {
     "groups": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "introduction"
-        ]
-      },
-      {
         "group": "Hardware",
         "pages": [
-          "tech-specs",
-          "Schematics"
+          "tech-specs"
         ]
       }
     ]
