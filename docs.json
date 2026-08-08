@@ -55,5 +55,9 @@
   },
   "styling": {
     "eyebrows": "section"
+  },
+  "appearance": {
+    "default": "light",
+    "strict": true
   }
 }
