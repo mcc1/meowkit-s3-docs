@@ -2,6 +2,16 @@
 title: "Tech specs"
 ---
 
+![Front View 1600 × 900 Px](/images/Front-View_1600-×-900-px.png "Front View 1600 × 900 Px")
+
+![Rear View 1600 X 900 Px](/images/Rear-View_1600-x-900-px.png "Rear View 1600 X 900 Px")
+
+![Side View 1600 X 900 Px](/images/Side-View_1600-x-900-px.png "Side View 1600 X 900 Px")
+
+Explore the hardware architecture of MeowKit and discover how each component is thoughtfully integrated to create a versatile platform for developers, makers, and hardware enthusiasts.
+
+---
+
 # Body
 
 <Columns cols={2}>
@@ -19,9 +29,13 @@ title: "Tech specs"
 
 # Size and weight
 
-**Length, width, and height:** 68.5\*62\*19mm
+![Size 1600 X 900 Px](/images/Size_1600-x-900-px.png "Size 1600 X 900 Px")
 
-**Weight:** 98 grams
+Height: 62 mm<br />Width: 68.5 mm
+
+![Deoth 1600 X 900 Px](/images/Deoth_1600-x-900-px.png "Deoth 1600 X 900 Px")
+
+Deoth: 19 mm<br />Weight: 98 g
 
 ---
 
@@ -49,17 +63,19 @@ title: "Tech specs"
 # Buttons & Joystick
 
 - A/B: Membrane tactile switches
-- Joystick: 5-way directional (Up/Down/Left/Right/Press)
+- Joystick: 4-way directional (Up/Down/Left/Right/Press)
 
 ---
 
 # USB
 
-- Firmware Download
-- JTAG Debugging (OpenOCD)
-- USB CDC (Virtual COM Port) — Serial Logging
-- USB HID
-- USB MSC — USB Mass Storage (U Disk)
+**Native USB OTG Controller**
+
+- Firmware Download & Upgrade
+- JTAG Debugging via OpenOCD
+- USB CDC Virtual COM Port
+- USB HID Device Support
+- USB Mass Storage (MSC)
 
 ---
 
@@ -135,7 +151,7 @@ title: "Tech specs"
 
 1×16-pin (2.54 mm) Dupont female expansion header
 
-![13 GPIO对齐](/images/13-GPIO对齐.png "13 GPIO对齐")
+![GPIO](/images/GPIO.png "GPIO")
 
 **External Power:**
 
@@ -178,3 +194,13 @@ Pin 15: RESET (hardware reset)
 Pin 16: GND
 
 ---
+
+# NFC 
+
+**Internal NFC Expansion Module(Optional)**
+
+- Controller: ST25R3916
+- Frequency: 13.56 MHz
+- Protocols: ISO/IEC 14443A/B, ISO/IEC 15693, NFC Forum, FeliCa™
+- Modes: Reader / Writer, Card Emulation
+- Interface: I²C
