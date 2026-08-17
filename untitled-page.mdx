@@ -1,0 +1,153 @@
+---
+title: "Schematics"
+---
+
+Explore MeowKit’s hardware schematics and see how its modules are connected. They provide a detailed reference for hardware development, low-level debugging, and learning how MeowKit works at the hardware level.
+
+---
+
+# Main PCB
+
+<Columns cols={2}>
+  <Column>
+    ![PCB Top View](/images/PCB-Top-View.png "PCB Top View")
+  </Column>
+  <Column>
+  </Column>
+</Columns>
+
+**Top Silkscreen**
+
+<Columns cols={2}>
+  <Column>
+    ![Top Silkscreen Logo](/images/top-silkscreen-logo.png "Top Silkscreen Logo")
+  </Column>
+  <Column>
+  </Column>
+</Columns>
+
+Use a single-color MeowKit logo optimized for PCB printing. Keep the artwork simple and legible at the final printed size.
+
+Maintain clear space around the logo and keep it away from pads, components, board edges, and other PCB features.
+
+**Bottom Silkscreen**
+
+Mark the designated 3M adhesive placement area on the bottom silkscreen using a dashed outline.
+
+Add the label:
+
+<Columns cols={2}>
+  <Column>
+    ![PCB Bottom View](/images/PCB-Bottom-View.png "PCB Bottom View")
+  </Column>
+  <Column>
+  </Column>
+</Columns>
+
+Keep the adhesive placement area free from components, vias, test points, and other features that may interfere with adhesive application or mechanical assembly.
+
+**Manufacturing & Traceability**
+
+The following manufacturing and traceability information shall be printed on the bottom silkscreen layer:
+
+| **Field** | **Description** |
+| :-: | :-: |
+| MODEL | Product model identifier |
+| REV | PCB hardware revision |
+| DATE | Manufacturing date |
+| BATCH | Production batch number |
+| SN | Serial number / barcode / QR code area |
+| QC | Quality control inspection mark |
+
+Recommended Layout
+
+```Plain
+MK-S3-KS-1500   REV 5.0
+AUTHOR: wangte 
+
+DATE: 2026-03-28
+BATCH: A01
+
+SN:
+QC:
+```
+
+---
+
+## Main blocks overview
+
+![Main Blocks Overview](/images/Main-blocks-overview.png "Main Blocks Overview")
+
+Every block is shown in detail as a separate document below.
+
+---
+
+## Power
+
+![Power](/images/Power.png "Power")
+
+The device uses the **AXP173 PMIC** as the central power management controller, integrating USB power input, Li-ion battery charging, power-path switching, voltage regulation, and system monitoring.
+
+The power system automatically manages energy flow between **USB VBUS and battery power**, providing stable power rails for the **ESP32-S3, sensors, and peripheral devices**.
+
+Through the **I²C control interface**, the main processor can monitor power status, configure charging parameters, and respond to power events through interrupt signals.
+
+<Warning>
+  **Power Initialization Notice**
+
+  During system startup, the AXP173 requires a short initialization period to complete internal power sequencing and stabilize all output rails.
+
+  Although the I²C interface may become available during this stage, the power management system may still be completing internal configuration.
+
+  To ensure reliable startup, it is recommended to use the PWROK signal to control the MCU reset sequence. The processor should begin execution only after all required power rails have reached a stable operating state.
+</Warning>
+
+## MCU
+
+![MCU](/images/MCU.png "MCU")
+
+## USB
+
+![USB](/images/USB.png "USB")
+
+## Display
+
+![Display](/images/Display.png "Display")
+
+## Buttons & Joystick
+
+![Buttons & Joystick](/images/Buttons-&-Joystick.png "Buttons & Joystick")
+
+## Audio
+
+![Audio](/images/Audio.png "Audio")
+
+## Storage
+
+![Storage](/images/Storage.png "Storage")
+
+## Sensor
+
+![Sensor](/images/Sensor.png "Sensor")
+
+## LED
+
+![LED](/images/LED.png "LED")
+
+## RTC
+
+![RTC](/images/RTC.png "RTC")
+
+## IO Expander
+
+![IO Expander](/images/IO-Expander.png "IO Expander")
+
+## GPIO
+
+![GPIO 1](/images/GPIO-1.png "GPIO 1")
+
+A 1×16 pin (2.54 mm) DuPont female expansion header provides native support for SPI,  I²C, and general-purpose GPIO interfaces, freeing the device from single-function limitations.<br /> It can become anything you choose to define — a retro camera, digital level, tachometer, distance meter, Morse code transmitter/receiver, and much more.
+
+---
+
+# NFC
