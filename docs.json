@@ -17,6 +17,12 @@
           "tech-specs",
           "schematics"
         ]
+      },
+      {
+        "group": "Getting started",
+        "pages": [
+          "untitled-page"
+        ]
       }
     ]
   },
