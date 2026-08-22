@@ -1,0 +1,69 @@
+---
+title: "Main Interface"
+---
+
+# Home
+
+\[ui\_home.png\]
+
+**Home-Centered Navigation**
+
+The Home screen is the center of a four-way navigation layout. **Clock**, **SD Card Files**, **Apps Menu**, and **Settings** are positioned above, below, left, and right of Home. Swipe up, down, left, or right on the touchscreen, or use the five-way joystick to quickly navigate between screens.
+
+The `ui_sd_null` and `ui_sd_on` icons switch automatically to indicate the current SD card status. The battery indicator in the top-right corner shows the current charge level using an `XX/100` value and a five-bar gauge, with each bar representing **20%**. The navigation indicator in the bottom-left corner shows your current position within the four-way navigation layout.
+
+---
+
+# Clock
+
+\[ui\_clock.png\]
+
+The main Clock & Calendar screen is powered by a dedicated **PCF8563 real-time clock (RTC)**, which keeps time even when the device is powered off. The **day of the week** is shown in the top-left corner using the **SUN–SAT** abbreviations, while the date is displayed in **MM/DD/YYYY** format. The current time is centered below in a large **60 pt** display using the **HH:MM:SS** format.
+
+**Double-tap the screen** to enter manual time and date settings. Changes take effect immediately after adjustment.
+
+---
+
+# **SD Card files**
+
+\[ui\_sd\_card\_files.png\]
+
+The SD card file system supports hierarchical navigation through multiple levels of directories. The header dynamically displays the current path: **SD Card Files** is shown at the root, while entering a subdirectory updates the title to **SD / Current Path**.
+
+The file list uses distinct icons to identify folders and files, with the scroll indicator appearing automatically when additional content is available. Tap a folder to open its contents, or press **B** to return to the previous directory. From the root directory, press **B** or swipe down to return to **Home**. When no SD card is detected or the current directory is empty, a placeholder message is displayed automatically.
+
+---
+
+# **Apps Menu**
+
+> **Vertically Scrollable Icon Grid Launcher/**垂直可滚动图标网格启动器
+
+The Apps Menu uses a three-column icon grid layout with vertical scrolling. Swipe up or down on the touchscreen to browse the available apps, then tap an icon to navigate and select an app.
+
+\[ui\_apps\_menu.png\]
+
+The Apps Menu uses a fixed three-column icon grid with vertical scrolling. The column positions are **X = 35 / 125 / 215**, with the first row starting at **Y = 30** and a **105 px** row spacing, allowing six app icons to be visible across two rows.
+
+Each app entry consists of a **70 × 70 px circular button** with a **35 px radius**, with a centered name label positioned directly below it. The button uses `#BEE700` as its default background and displays a glowing outer outline in `#9DDE00` when pressed.
+
+All icons and labels are contained within a **full-screen transparent vertical scrolling container** sized **320 × 240 px**, with no background or border. The underlying background and navigation icon along the left edge remain visible through the container.
+
+**Swipe left** on the touchscreen to return to **Home**.
+
+---
+
+# Settings
+
+\[ui\_settings.png\]
+
+**Settings** brings volume, brightness, Wi-Fi, and system shortcuts together in one place.
+
+Use the two vertical sliders on the left to adjust the volume and screen brightness. Changes take effect immediately and are saved to NVS.
+
+The Wi-Fi status panel in the top-right refreshes every 2 seconds. When connected, it scrolls through **“connect: SSID”**. Tap the panel to open Wi-Fi setup.
+
+The **2×2 shortcut grid** provides quick access to **Advanced Settings, USB MSC, Bluetooth,** and **System Info**.
+
+**Swipe right to return to Home.**
+
+---

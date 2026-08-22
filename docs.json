@@ -21,7 +21,8 @@
       {
         "group": "Getting started",
         "pages": [
-          "first-start"
+          "first-start",
+          "main-interface"
         ]
       }
     ]
