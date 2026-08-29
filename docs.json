@@ -22,7 +22,8 @@
         "group": "Getting started",
         "pages": [
           "first-start",
-          "main-interface"
+          "main-interface",
+          "settings"
         ]
       }
     ]
