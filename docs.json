@@ -69,5 +69,13 @@
   "appearance": {
     "default": "light",
     "strict": true
+  },
+  "logo": {
+    "light": "/images/横向3∶1dark.png",
+    "dark": "/images/横向3∶1dark.png"
+  },
+  "favicon": {
+    "light": "/images/512x512pxapp网站图标dark.png",
+    "dark": "/images/512x512pxapp网站图标dark.png"
   }
 }
