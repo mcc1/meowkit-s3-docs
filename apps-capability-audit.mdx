@@ -1,0 +1,454 @@
+---
+title: "App capability audit"
+description: "Source-based review of the MeowKit native apps, their real dependencies, and their controls."
+---
+
+# App capability audit
+
+> This is a source-based audit of the personal firmware mirror, not an official
+> vendor capability list. The code review was performed on 2026-09-05. A
+> capability marked **hardware pending** still needs to be checked on a real
+> MeowKit board.
+
+## How to read this page
+
+The app menu contains fifteen slots, but a menu icon does not prove that an
+app is implemented. This audit separates four different things:
+
+- **Implemented** — the firmware contains an app-specific code path.
+- **External dependency** — the app needs another computer, BLE host, IR target,
+  SD card, or other equipment to show useful behavior.
+- **Stub** — the slot only opens a placeholder screen and runs no feature logic.
+- **Hardware pending** — source inspection is complete, but this workspace has
+  not tested the behavior on a physical board.
+
+The launcher uses the physical buttons and joystick while an app is running.
+The global launcher behavior is **long-press B to exit the current app**. Some
+apps also use a short B press for their own menus or actions.
+
+## Quick inventory
+
+| Slot | App shown in firmware | What the code actually does | Main dependency | Status |
+| --- | --- | --- | --- | --- |
+| 01 | Dino | Touch-controlled endless runner with sound effects | Touch, speaker | Implemented; hardware pending |
+| 02 | Matrix Rain | Automatic text-rain animation | LCD only | Implemented; hardware pending |
+| 03 | VU Meter | Microphone amplitude to an analogue needle | ES7210/I2S microphone and SD background PNG | Implemented; hardware pending |
+| 04 | Retro TV | Wi-Fi TCP/JPEG screen-cast receiver | Wi-Fi credentials and an external sender | Implemented; host and hardware pending |
+| 05 | PCMonitor | Displays telemetry received over USB serial | External PC telemetry sender | Implemented; host and hardware pending |
+| 06 | Air Mouse | BLE HID mouse driven by IMU motion | BLE host and BMI270 IMU | Implemented; host and hardware pending |
+| 07 | BLE Spam | Sends selected BLE advertising payloads | Nearby BLE devices; high-risk radio behavior | Implemented; do not execute payload tests without a narrow test target |
+| 08 | Bad USB | Runs DuckyScript-like files as USB or BLE HID | External host and SD scripts/layouts; high-risk HID behavior | Implemented; do not execute unknown payloads |
+| 09 | Infrared | Learns, stores, and transmits IR signals | IR target and SD card for saved remotes | Implemented; hardware/payload testing pending |
+| 10 | I2C Explorer | Scans the shared I2C bus without register writes | I2C wiring and optional external device | Implemented and verified on the MeowKit v1.0 board |
+| 11 | `app_11` | Placeholder screen only | None | Stub |
+| 12 | `app_12` | Placeholder screen only | None | Stub |
+| 13 | `app_13` | Placeholder screen only | None | Stub |
+| 14 | `app_14` | Placeholder screen only | None | Stub |
+| 15 | `app_15` | Placeholder screen only; contains an unused ES8311 helper source | None in the registered app | Stub |
+
+The five later slots have icons that suggest NFC, smart-home, WebSerial, AI,
+or music features, but the registered app classes do not implement those
+features. Those icons are roadmap/UI assets, not runtime evidence.
+
+## App 01 — Dino
+
+### Actual capability
+
+This is a local endless-runner game. It creates a PSRAM framebuffer, draws the
+dinosaur and obstacles directly to the LCD, and plays jump/level/game-over
+sound effects through the onboard speaker.
+
+The source contains a high-score structure, but its load/save persistence is
+commented out. Each `begin()` resets the in-memory high score to zero, so the
+displayed high score should not be treated as persistent storage.
+
+### How to use it
+
+1. Open **Dino**.
+2. Touch the screen once on the splash page to start.
+3. Touch the screen during play to jump.
+4. Touch the screen after game over to restart.
+5. Long-press **B** to leave the app.
+
+The source still contains commented button-based input from the original game,
+but the active input path is the FT6336 touch controller.
+
+### External requirements and source clues
+
+- No SD card or network connection is required.
+- Audio uses the onboard speaker.
+- The game includes an `ESPboyPlaytune`-style sound format and a vendored
+  `FixedPointsArduino` directory, so it is an adaptation rather than a
+  MeowKit-specific game engine.
+
+Source areas: `src/app/app_01/src/Game.cpp`, `src/app/app_01/src/dino_sfx.cpp`,
+and `src/app/app_01/FixedPointsArduino/` in the firmware repository.
+
+## App 02 — Matrix Rain
+
+### Actual capability
+
+This app continuously renders a green digital-rain animation directly to the
+LCD. It has no network, SD, audio, sensor, or host-computer protocol.
+
+### How to use it
+
+Open **Matrix Rain**. The animation starts automatically. Long-press **B** to
+leave the app. There is no active configuration menu in the registered app.
+
+### Source clues
+
+`DigitalRainAnimation.hpp` identifies the animation as a separate
+`DigitalRainAnimation` library created by Eric Nam in 2021. The MeowKit wrapper
+only initializes it and calls its `loop()` method.
+
+## App 03 — VU Meter
+
+### Actual capability
+
+This is a real microphone-driven meter, not a visual-only animation. On entry it
+initializes the ES7210 audio ADC and I2S RX path, reads stereo DMA buffers,
+converts the left channel to an amplitude estimate, smooths it, and rotates a
+needle on the display.
+
+### Required SD content
+
+The app loads this exact file from the mounted SD card:
+
+```text
+/vu_meter/vu_meter_bg.png
+```
+
+If the codec, I2S driver, PSRAM sprite, or PNG is unavailable, the app displays
+an error and does not become ready.
+
+### How to use it
+
+1. Put `vu_meter_bg.png` at `/vu_meter/vu_meter_bg.png` on the SD card.
+2. Open **VU Meter**.
+3. Play sound near the onboard microphone.
+4. Long-press **B** to leave the app.
+
+The app has no user calibration screen. Its gain, sample rate, needle range,
+and smoothing constants are compiled into the source.
+
+## App 04 — Retro TV
+
+### Actual capability
+
+This is a Wi-Fi receiver. MeowKit does not capture a computer screen by itself.
+It connects to Wi-Fi, opens a TCP server on port `63333`, and receives JPEG
+frames from an external sender.
+
+The receiver protocol in `TCPReceiver.h` is:
+
+1. MeowKit sends `JPG\n` to request a frame.
+2. The sender returns seven bytes: ASCII `JPG` followed by a little-endian
+   32-bit JPEG payload length.
+3. The sender transmits that JPEG payload.
+
+### How to use it
+
+1. Configure and connect Wi-Fi in the system Settings screen.
+2. Open **Retro TV**.
+3. Press **A** to connect using the saved Wi-Fi credentials.
+4. When an IP address appears, press **A** again to start the TCP receiver.
+5. Point a compatible external sender at the MeowKit IP address and port
+   `63333`.
+6. Press **B** to stop/cancel or leave the app.
+
+The repository contains the receiver, but does not contain a general-purpose
+desktop sender. Without a compatible sender this app only shows its waiting
+screen.
+
+## App 05 — PCMonitor
+
+### Actual capability
+
+This app is a serial telemetry display. It does not inspect Windows hardware,
+query a GPU, or measure the PC by itself. It reads bytes from Arduino `Serial`,
+accumulates a frame until it sees `|`, and parses fixed field markers.
+
+The parser expects fields equivalent to:
+
+```text
+CPU:<cpu name>GPU:<gpu name>C<cpu temp>c<cpu load>|G<gpu temp>c<gpu load>|R<used ram>|RA<available ram>|CHC<cpu MHz>|GMT<gpu memory MB>|
+```
+
+The exact name-offset handling is hard-coded for Intel/NVIDIA strings, so this
+is a fragile application protocol rather than a general telemetry format.
+
+### How to use it
+
+1. Run an external PC-side telemetry sender that writes the expected frame to
+   the MeowKit serial port.
+2. Open **PCMonitor**.
+3. Keep sending complete frames ending in `|`.
+4. Long-press **B** to leave the app.
+
+The firmware source calls `Serial.begin(9600)`, while `platformio.ini` declares
+`monitor_speed=115200`. The authoritative runtime baud rate is unresolved;
+try `9600` first when diagnosing the device, and treat the app as hardware
+pending until a real sender/device test succeeds.
+
+## App 06 — Air Mouse
+
+### Actual capability
+
+This app advertises a BLE HID mouse named **MeowKit AirMouse**. It samples the
+BMI270 gyroscope, performs startup bias calibration and software drift
+correction, then maps motion to mouse movement.
+
+It also implements:
+
+- **A press** — left mouse click.
+- **Short B release** — right mouse click.
+- **Long B press** — leave the app instead of sending a right click.
+- **Vertical touch gesture in the right-side scroll area** — mouse wheel.
+
+### How to use it
+
+1. Open **Air Mouse**.
+2. Keep the device still during the startup calibration.
+3. Pair a computer, tablet, or other BLE HID host with `MeowKit AirMouse`.
+4. Move the device to move the pointer.
+5. Use A/B for clicks and the right-side touch area for scrolling.
+
+Without a BLE HID host, the local screen can still show IMU state, but no host
+pointer will move.
+
+### Source clues
+
+The source explicitly describes the motion algorithm as ported from
+`GeekFantasy/bluego-esp32`. The wrapper adds BMI270-specific calibration and
+the MeowKit UI around that algorithm.
+
+## App 07 — BLE Spam
+
+### Actual capability
+
+This app generates and broadcasts selected BLE advertising payloads. Its menu
+contains Apple Continuity, Google Fast Pair, Samsung EasySetup, Microsoft
+SwiftPair, LoveSpouse, NameFlood, and a combined “Kitchen Sink” mode. The source
+uses raw ESP32 BLE GAP advertising and randomizes the advertising address.
+
+### How to use it
+
+The interface is source-confirmed as follows:
+
+1. Use Up/Down to select an attack profile.
+2. Press **A** to enter its running page.
+3. Press **A** again to start or stop advertising.
+4. Use Up/Down on the running page to change the interval from 20, 50, 100,
+   200, or 500 ms.
+5. Press short **B** to stop and return to the menu.
+6. Long-press **B** to leave the app.
+
+This section intentionally does not provide a payload-testing procedure. The
+feature is an active radio interference/spoofing tool and must not be tested
+against nearby devices without an isolated, explicitly authorized test target.
+
+### Source clues
+
+The header identifies the app as ported from `Next-Flip/Momentum-Apps`, and the
+implementation names the Momentum commit and attack table it follows. This is
+direct evidence of upstream sample/feature-port lineage, not merely a visual
+similarity.
+
+## App 08 — Bad USB
+
+### Actual capability
+
+This app is a DuckyScript-like HID runner. It supports two transport modes:
+
+- **USB** — native USB HID to an attached host.
+- **BLE** — BLE keyboard HID to a paired host.
+
+The app can enumerate scripts and keyboard layouts from the SD card, parse
+keyboard/mouse/consumer-control commands, and execute a selected script after
+the connection/confirmation flow.
+
+### SD paths
+
+```text
+/badusb/scripts
+/badusb/layouts
+```
+
+The firmware source includes demo scripts and Momentum `.kl` keyboard layout
+files, but those are payload data, not harmless automatic tests.
+
+### How to use it safely
+
+1. Use only a sacrificial test host that contains no sensitive data.
+2. Put a reviewed script in `/badusb/scripts` and, if needed, a matching layout
+   in `/badusb/layouts`.
+3. Open **Bad USB** and choose USB or BLE mode with Left/Right.
+4. Select a script with Up/Down and press **A** to load it.
+5. Confirm the host is the intended target before starting execution.
+6. Use the app's stop/back controls or long-press **B** to leave.
+
+The source explicitly labels this as a port from `Next-Flip/Momentum-Firmware`
+and states compatibility with Flipper/Rubber-Ducky-style scripts. It should be
+treated as a high-risk HID feature, not as a general serial automation shell.
+
+## App 09 — Infrared
+
+### Actual capability
+
+This app uses the onboard IR transmitter on GPIO 7 and receiver on GPIO 5. It
+can:
+
+- Learn a remote-control signal.
+- Display decoded or raw timing data.
+- Save a learned signal as a Flipper-compatible `.ir` file.
+- Load saved remotes and transmit individual signals.
+- Offer built-in universal-remote categories such as TV, AC, projector, audio,
+  Blu-ray/DVD, fan, LED, and monitor.
+- Iterate a `tv.ir` signal set in a TV-B-Gone-style mode.
+
+### SD paths and files
+
+The app uses the `/infrared` directory for saved remotes and includes bundled
+`.ir` examples for TV, AC, projector, and audio. A microSD card is required
+for saving and loading the remote database.
+
+### How to use it
+
+1. Open **Infrared**.
+2. Choose **Learn New Signal**, **Saved Remotes**, or **Universal Remote**.
+3. For learning, point a remote at the MeowKit IR receiver and press the remote
+   button when prompted.
+4. Review the decoded/raw result; use the save flow to name and store it.
+5. Select a saved signal or universal-remote button and press **A** to transmit.
+6. Use **B** for back and long-press **B** to leave the app.
+
+Only test against equipment you own or are authorized to control. The source
+uses the `IRremoteESP8266` library and deliberately adopts a Flipper-compatible
+file format; those are clear upstream integration points.
+
+## App 10 — I2C Explorer
+
+### Actual capability
+
+This firmware version replaces the old app_10 placeholder with a non-destructive
+I2C address explorer.
+
+- Scans 7-bit addresses `0x08` through `0x77`.
+- Uses the already initialized `In_I2C` bus.
+- Shows the bus as SDA GPIO 1, SCL GPIO 2, 100 kHz.
+- Labels addresses known from the BSP, while marking other ACKing addresses as
+  `Unknown / external device`.
+- Performs no register reads and no register writes.
+
+The scan also emits machine-readable serial lines, so the result is not trapped
+on the LCD:
+
+```text
+I2C_SCAN_BEGIN,bus=In_I2C,sda=1,scl=2,freq=100000,range=0x08-0x77
+I2C_SCAN_ACK,address=0x18,name=ES8311 audio codec
+I2C_SCAN_ACK,address=0x19,name=PCA9557 IO expander
+I2C_SCAN_ACK,address=0x34,name=AXP173 PMU
+I2C_SCAN_ACK,address=0x38,name=FT6336 touch
+I2C_SCAN_ACK,address=0x41,name=ES7210 audio ADC
+I2C_SCAN_ACK,address=0x51,name=PCF8563 RTC
+I2C_SCAN_ACK,address=0x68,name=BMI270 IMU
+I2C_SCAN_END,count=7
+```
+
+Only ACKing addresses are emitted. The source calls `Serial.begin(9600)`;
+the working native USB CDC capture used `9600` with both host control lines
+asserted (`DTR=true`, `RTS=true`). Native USB CDC line states matter here:
+without them, the Arduino USB CDC implementation treats the host as
+disconnected and drops `Serial` output. The repository's
+`tools/serial-monitor.ps1` now enables both lines by default.
+
+After a web-installer flash, close the installer page before opening the
+serial monitor. `esp-web-tools` may keep the serial port open briefly for its
+post-install initialization, which otherwise prevents another monitor from
+opening `COM6`.
+
+### Verified board result
+
+The first physical-board scan produced seven ACKs:
+
+| Address | BSP label | Result |
+| --- | --- | --- |
+| `0x18` | ES8311 audio codec | ACK |
+| `0x19` | PCA9557 IO expander | ACK |
+| `0x34` | AXP173 PMU | ACK |
+| `0x38` | FT6336 touch | ACK |
+| `0x41` | ES7210 audio ADC | ACK |
+| `0x51` | PCF8563 RTC | ACK |
+| `0x68` | BMI270 IMU | ACK |
+
+`0x44` (the BSP's SHT30 address) did not ACK in this run. This is a runtime
+snapshot of the tested board and wiring, not proof that an address is always
+present or that the responding chip identity has been register-verified.
+
+The known-address labels are only a lookup table. An ACK proves that something
+responded at that address; it does not prove the exact chip identity.
+
+The bus is shared by the onboard peripherals. The current `Ex_I2C` object is
+not initialized separately, so an expansion module should be connected to the
+same SDA/SCL bus rather than assuming a second ready-to-use controller.
+
+### How to use it
+
+1. Connect the external I2C module to the board's I2C power, SDA, and SCL lines.
+2. Open **I2C Explorer**.
+3. Wait for the address scan to finish.
+4. Use Up/Down to inspect the responding address list.
+5. Press **A** on the list to rescan.
+6. Press short **B**, or long-press **B**, to leave.
+
+The scan path is source-confirmed and the address list above is verified for
+the tested board state. Other boards or wiring states can differ because the
+result depends on power rails, pull-ups, peripheral state, and any attached
+module.
+
+## Apps 11–15 — placeholders, not features
+
+The registered classes for `app_11` through `app_15` create a black LVGL screen,
+show their slot name, service `lv_timer_handler()`, and delete the screen on
+close. They do not implement NFC, smart-home, WebSerial, AI Chat, or music.
+
+`app_15` contains an `es8311_i2c.cpp` helper with codec register operations, but
+the registered `App15` class never constructs or calls that helper. It is dead
+support code, not an operational music app.
+
+The AI Chat/MCP firmware is also a separate firmware line; the standard app14
+placeholder should not be counted as AI capability.
+
+## Upstream/sample lineage review
+
+The source contains explicit provenance clues rather than only stylistic
+similarity:
+
+| Area | Evidence in source | Review conclusion |
+| --- | --- | --- |
+| Dino | `ESPboyPlaytune`-style SFX format and `FixedPointsArduino` directory | Adapted game/library components |
+| Matrix Rain | `DigitalRainAnimation.hpp` credits Eric Nam, 2021 | Imported animation component with a thin MeowKit wrapper |
+| PC Monitor | SquareLine-generated app assets and fixed marker parser | Generated UI plus a fragile custom serial protocol |
+| Air Mouse | Explicit `GeekFantasy/bluego-esp32` port comments | Direct algorithm port with BMI270/MeowKit adaptation |
+| BLE Spam | Explicit `Next-Flip/Momentum-Apps` URL and commit reference | Direct protocol/attack-table port |
+| Bad USB | Explicit `Next-Flip/Momentum-Firmware` port comments and Flipper format | Direct parser/layout port |
+| Infrared | Flipper-compatible `.ir` format and Flipper-style TUI comments | Reimplemented integration around an upstream-compatible format |
+| App 11–15 | Generated placeholder classes and roadmap icons | UI scaffolding, not implemented features |
+
+This is a provenance review, not a license audit. Any redistribution of the
+firmware should separately check the licenses and attribution requirements of
+each vendored or ported component.
+
+## Verification boundary
+
+This page records source-confirmed behavior only. It does not claim that every
+app works on a physical board. Remaining runtime checks include:
+
+- I2C scan delta after connecting a known external expansion module.
+- SD card loading for the VU Meter, Bad USB, and Infrared apps.
+- Wi-Fi sender interoperability for Retro TV.
+- PC-side serial sender interoperability for the PCMonitor app and its custom
+  frame protocol.
+- BLE pairing and HID behavior for Air Mouse.
+- Any high-risk BLE Spam, Bad USB payload, or IR transmission test.
