@@ -186,10 +186,12 @@ is a fragile application protocol rather than a general telemetry format.
 3. Keep sending complete frames ending in `|`.
 4. Long-press **B** to leave the app.
 
-The firmware source calls `Serial.begin(9600)`, while `platformio.ini` declares
-`monitor_speed=115200`. The authoritative runtime baud rate is unresolved;
-try `9600` first when diagnosing the device, and treat the app as hardware
-pending until a real sender/device test succeeds.
+The firmware source calls `Serial.begin(9600)`, and `platformio.ini` now uses
+`monitor_speed=9600` for consistency. This board uses native USB CDC, so the
+baud value is not a traditional UART clock setting; the host must also assert
+both `DTR` and `RTS` for the firmware's USB CDC output to be considered
+connected. The PCMonitor app still needs a real sender/device interoperability
+test.
 
 ## App 06 — Air Mouse
 
