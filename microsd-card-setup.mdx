@@ -14,3 +14,22 @@ To insert the microSD card into your MeowKit, do the following:
   <Step title="Check whether your MeowKit recognizes the microSD card.">
   </Step>
 </Steps>
+
+# Copying the bundled SD files
+
+Several apps read their data from the card. The firmware repository ships that
+data in the `sd files/` folder; copy its **contents** to the root of the card
+before the first use:
+
+<Steps>
+  <Step title="Format the card as FAT32 (8–32 GB recommended).">
+  </Step>
+  <Step title="Copy everything inside `sd files/` from the firmware repository to the root of the card.">
+    After copying, the card root must contain `assets/`, `badusb/`, `infrared/`, `music/` and `vu_meter/`.
+  </Step>
+  <Step title="Check the infrared library.">
+    `/infrared/universal/` must contain the `.ir` files (`tv.ir`, `ac.ir`, `audio.ir`, …). Without them the
+    Infrared app's **Universal (all brands)** menu shows "Universal library not on SD card". Remotes you learn
+    yourself are stored next to that folder as `/infrared/<Device>.ir`.
+  </Step>
+</Steps>

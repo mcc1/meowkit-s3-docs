@@ -301,29 +301,50 @@ treated as a high-risk HID feature, not as a general serial automation shell.
 This app uses the onboard IR transmitter on GPIO 7 and receiver on GPIO 5. It
 can:
 
-- Learn a remote-control signal.
-- Display decoded or raw timing data.
-- Save a learned signal as a Flipper-compatible `.ir` file.
-- Load saved remotes and transmit individual signals.
-- Offer built-in universal-remote categories such as TV, AC, projector, audio,
-  Blu-ray/DVD, fan, LED, and monitor.
-- Iterate a `tv.ir` signal set in a TV-B-Gone-style mode.
+- Learn a remote-control signal and test-send it before saving.
+- Store learned signals as buttons inside a device file. One device holds any
+  number of buttons; new buttons can be learned from inside the device view.
+- Rename and delete devices and buttons.
+- Load saved devices and transmit individual buttons.
+- Offer a **Universal (all brands)** mode for discovering an unknown remote:
+  for a chosen category (TV, AC, projector, audio, Blu-ray/DVD, fan, LED,
+  monitor) one button press sweeps the matching code of every brand in the
+  library, one per second by default. Press **B** the moment the device
+  reacts to pause on that code, step back or forward and resend to confirm,
+  then **Save as device** to turn every button of that brand into a normal
+  saved remote.
+- Iterate the whole `tv.ir` signal set in a TV-B-Gone-style mode.
 
 ### SD paths and files
 
-The app uses the `/infrared` directory for saved remotes and includes bundled
-`.ir` examples for TV, AC, projector, and audio. A microSD card is required
-for saving and loading the remote database.
+Saved devices live in `/infrared/<Device>.ir`; the bundled multi-brand library
+lives in `/infrared/universal/<category>.ir`. Both use the Flipper Zero `.ir`
+format, so files can be exchanged with a Flipper or with public IR databases.
+Copy `sd files/infrared/` from the firmware repository to the card first (see
+[microSD card setup](/microsd-card-setup)); without it the Universal menu shows
+a "library not on SD card" message. A microSD card is required for saving and
+loading.
 
 ### How to use it
 
 1. Open **Infrared**.
-2. Choose **Learn New Signal**, **Saved Remotes**, or **Universal Remote**.
+2. Choose **Learn**, **Remotes**, or **Universal (all brands)**.
 3. For learning, point a remote at the MeowKit IR receiver and press the remote
-   button when prompted.
-4. Review the decoded/raw result; use the save flow to name and store it.
-5. Select a saved signal or universal-remote button and press **A** to transmit.
-6. Use **B** for back and long-press **B** to leave the app.
+   button when prompted. The result screen shows the protocol and address /
+   command (or "RAW" with the sample count). Choose **Send test** to verify,
+   then **Save…**.
+4. Pick an existing device or **+ New device…**, then name the button. The
+   device view opens with the new button selected.
+5. In **Remotes**, select a device, then a button, and press **A** to send.
+   Press **right** on the joystick for options (learn new button, rename,
+   delete).
+6. In **Universal (all brands)**, choose a category and a button; the popup
+   counts the brands sent (left/right toggles 1 s / 0.25 s). Press **B** when
+   the device reacts: the pause screen shows the code, lets you resend or step
+   to the previous/next code, and **Save as device** creates a saved remote
+   with all buttons of that brand. Use that remote from **Remotes** afterwards
+   instead of sweeping again.
+7. Use **B** for back and long-press **B** to leave the app.
 
 Only test against equipment you own or are authorized to control. The source
 uses the `IRremoteESP8266` library and deliberately adopts a Flipper-compatible
