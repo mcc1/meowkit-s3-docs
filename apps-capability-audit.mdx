@@ -40,7 +40,7 @@ apps also use a short B press for their own menus or actions.
 | 08 | Bad USB | Runs DuckyScript-like files as USB or BLE HID | External host and SD scripts/layouts; high-risk HID behavior | Implemented; do not execute unknown payloads |
 | 09 | Infrared | Learns, stores, and transmits IR signals | IR target and SD card for saved remotes | Implemented; hardware/payload testing pending |
 | 10 | I2C Explorer | Scans the shared I2C bus without register writes | I2C wiring and optional external device | Implemented and verified on the MeowKit v1.0 board |
-| 11 | `app_11` | Placeholder screen only | None | Stub |
+| 11 | AC Remote | Synthesises complete air-conditioner frames from a stored state (power, mode, temperature, fan, swing) for ~50 protocols | IR target and SD card for saved air-conditioners | Implemented; hardware testing pending |
 | 12 | `app_12` | Placeholder screen only | None | Stub |
 | 13 | `app_13` | Placeholder screen only | None | Stub |
 | 14 | `app_14` | Placeholder screen only | None | Stub |
@@ -346,6 +346,17 @@ loading.
    instead of sweeping again.
 7. Use **B** for back and long-press **B** to leave the app.
 
+### Air-conditioner remotes
+
+Air-conditioner remotes send the whole state (power, mode, temperature, fan)
+in one long frame. Frames split into bursts, such as Daikin, learn normally.
+A single continuous frame longer than about 200 ms, such as Hitachi
+RAS-series units, fades out in the receiver and shows **FADED** on the result
+screen; such a signal cannot be learned on this hardware. For Hitachi 344-bit
+remotes the firmware repository provides `tools/complete-hitachi344.py`, which
+rebuilds a complete frame from the faded capture and writes a ready-to-use
+device file to the card.
+
 Only test against equipment you own or are authorized to control. The source
 uses the `IRremoteESP8266` library and deliberately adopts a Flipper-compatible
 file format; those are clear upstream integration points.
@@ -429,6 +440,47 @@ The scan path is source-confirmed and the address list above is verified for
 the tested board state. Other boards or wiring states can differ because the
 result depends on power rails, pull-ups, peripheral state, and any attached
 module.
+
+## App 11 — AC Remote
+
+### Actual capability
+
+Air-conditioner remotes transmit the whole machine state on every press, and
+some of those frames are too long for the IR receiver to learn (see App 09).
+AC Remote sidesteps learning: you pick the protocol of your unit, and the
+firmware's IR library builds a complete, checksummed frame from the state you
+set on screen.
+
+- Any number of air-conditioners, each with its own name, protocol, optional
+  model and remembered state.
+- Protocol picker with common brands first (Hitachi, Daikin, Panasonic,
+  Mitsubishi, Fujitsu, Gree, Toshiba, Sharp, LG, Samsung, Midea, Carrier,
+  Haier, Kelvinator, Coolix) and an alphabetical list of every supported
+  protocol at the end.
+- Remote-style control screen: a status panel showing temperature, mode, fan,
+  swing and power, and six buttons — Power, Temp -, Temp +, Mode, Fan, Swing —
+  plus an Advanced page with Quiet / Turbo / Econo / Light. Every press sends
+  the full state at once, like a physical remote.
+- The last sent state is stored per device, so the app reopens where you left
+  it.
+
+### SD paths and files
+
+Devices are stored as `/ac/<Name>.cfg`, a short key=value text file you can
+read or edit on a PC (unknown keys are dropped the next time the device saves).
+
+### How to use it
+
+1. Open **AC Remote** → **+ New device...**.
+2. Pick the protocol. Hitachi RAS-series units are `HITACHI_AC344`; if a
+   protocol has models, pick one or keep **Library default**.
+3. Name the device. The control screen opens.
+4. Highlight a button with the joystick and press **A**; the unit should react
+   to every press. **Right** opens options; **B** goes back; long-press **B**
+   leaves the app.
+
+If the panel says the protocol is not supported, the `.cfg` names a protocol
+this firmware cannot send; use **Change protocol**.
 
 ## Apps 11–15 — placeholders, not features
 
