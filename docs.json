@@ -22,7 +22,6 @@
         "group": "Getting started",
         "pages": [
           "first-start",
-          "microsd-card-setup",
           "main-interface",
           "apps-capability-audit",
           "settings"

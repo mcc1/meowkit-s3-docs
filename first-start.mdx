@@ -4,7 +4,17 @@ title: "First start"
 
 ![Unboxing](/images/Unboxing.png "Unboxing")
 
-Thank you so much for choosing MeowKit! We’re excited for you to explore everything this little device has to offer and discover the many ways you can build, experiment, and create with it. We can’t wait to see what you’ll make, explore, and accomplish with MeowKit. Enjoy your new MeowKit, and let the journey begin!
+Thank you so much for choosing MeowKit! We’re excited for you to explore everything this little device has to offer and discover the many ways you can build, experiment, and create with it. We can’t wait to see what you’ll make, explore, and accomplish with MeowKit. **Enjoy your new MeowKit, and let the journey begin!**
+
+---
+
+# **What's in the box**
+
+![In The Box](/images/in-the-box.png "In The Box")
+
+<Warning>
+  doesn't come with a microSD card, so you'll need to purchase one separately.
+</Warning>
 
 ---
 
@@ -24,6 +34,8 @@ press and hold the power button for about 1–2 seconds. Once powered on, the sc
 # Rebooting
 
 Briefly short the `RESET` and `GND` pins on the GPIO header with a jumper wire or Dupont pin to reboot the device automatically.
+
+![Rebooting](/images/rebooting.jpg "Rebooting")
 
 ---
 
@@ -45,7 +57,65 @@ Higher-capacity cards may require longer initialization times and can vary depen
   MeowKit doesn't come with a microSD card, so you'll need topurchase one separately.
 </Warning>
 
+# **Copying the bundled SD files**
+
+Several apps read their data from the card. The firmware repository ships that
+data in the `sd files/` folder; copy its **contents** to the root of the card
+before the first use:
+
+<Steps>
+  <Step title="Format the card as FAT32 (8–32 GB recommended).">
+  </Step>
+  <Step title="Copy everything inside `sd files/` from the firmware repository to the root of the card.">
+    After copying, the card root must contain `assets/`, `badusb/`, `infrared/`, `music/` and `vu_meter/`.
+  </Step>
+  <Step title="Check the infrared library.">
+    `/infrared/universal/` must contain the `.ir` files (`tv.ir`, `ac.ir`, `audio.ir`, …). Without them the
+    Infrared app's **Universal (all brands)** menu shows "Universal library not on SD card". Remotes you learn
+    yourself are stored next to that folder as `/infrared/<Device>.ir`.
+  </Step>
+</Steps>
+
+---
+
 # **Update Firmware**
+
+Keep your MeowKit up to date with the latest official firmware. The update runs directly from your browser.
+
+Before you begin, make sure MeowKit is **powered off** and the USB cable is disconnected.
+
+<Steps>
+  <Step title="**Enter Download Mode.**">
+    Insert a Dupont jumper wire through the hole on the back of MeowKit until it presses the **BOOT** button. Keep holding BOOT, then press and hold the **Power** button for **1–2 seconds** and release it. Keep BOOT pressed throughout, then remove the jumper wire. The screen will remain off.
+  </Step>
+  <Step title="**Connect MeowKit.**">
+    Use a **USB Type-C cable** to connect Meowkit to your computer.
+  </Step>
+  <Step title="**Open the download page.**">
+    Go to [https://meowkit.cc/pages/download](https://meowkit.cc/pages/download) and click "**Connect and install**".
+  </Step>
+  <Step title="**Select the serial port.**">
+    Choose **USB JTAG/serial debug unit (COMxx)**, such as COM16, then click "**Connect**".
+  </Step>
+  <Step title="**Select the firmware.**">
+    Click "**Install Meowkit S3**".
+  </Step>
+  <Step title="**Confirm the installation.**">
+    Check "**Erase device**", then click "**Next**".
+  </Step>
+  <Step title="**Start the update.**">
+    Confirm the installation and click "**Install**" to begin the firmware update.
+  </Step>
+  <Step title="**Wait for completion.**">
+    Wait while the installation progress reaches 100%. When "Installation complete" appears,
+
+    your Meowkit is ready to use.
+  </Step>
+</Steps>
+
+<Note>
+  Keep MeowKit connected throughout the installation. **Erase device** will remove stored settings and data.
+</Note>
 
 ---
 
